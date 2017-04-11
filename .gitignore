@@ -33,3 +33,8 @@
 
 *.tmp
 msg.tmp
+
+include/*
+lib/*
+bin/*
+
