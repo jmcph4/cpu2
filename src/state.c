@@ -244,3 +244,26 @@ unsigned int state_write(FILE* file, State* state)
     return CPU2_ERR_SUCCESS;
 }
 
+/* Utilities */
+unsigned int state_reset_status(State* state)
+{
+    if(state == NULL)
+    {
+        return CPU2_ERR_NULL;
+    }
+
+    unsigned int res = 0;
+
+    for(unsigned int i=0;i<ISA_NUM_STATUS_BITS;i++)
+    {
+        res = state_set_status(i, false, state);
+
+        if(res != CPU2_ERR_SUCCESS)
+        {
+            return res;
+        }
+    }
+
+    return CPU2_ERR_SUCCESS;
+}
+

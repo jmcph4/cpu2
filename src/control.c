@@ -71,6 +71,9 @@ unsigned int execute(uint8_t opcode, uint8_t dest, uint8_t src, int8_t value,
         case ISA_OPCODE_JMP:
             isa_op_jmp(src, state);
             break;
+        case ISA_OPCODE_JPV:
+            isa_op_jpv(src, state);
+            break;
     }
 
     return CPU2_ERR_SUCCESS;

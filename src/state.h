@@ -42,5 +42,8 @@ unsigned int state_get_status(unsigned int bit, bool* data, State* state);
 unsigned int state_write(FILE* file, State* state);
 unsigned int state_read(FILE* file, State* state);
 
+/* Utilities */
+unsigned int state_reset_status(State* state);
+
 #endif /* STATE_H_ */
 
