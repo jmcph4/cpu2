@@ -98,3 +98,29 @@ unsigned int isa_op_add(uint8_t dest, uint8_t src, State* state)
     return CPU2_ERR_SUCCESS;
 }
 
+unsigned int isa_op_jmp(uint8_t reg, State* state)
+{
+    if(state == NULL)
+    {
+        return CPU2_ERR_NULL;
+    }
+
+    int8_t reg_val = 0;
+
+    unsigned int res = state_get_reg(reg, &reg_val, state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    res = state_set_program_counter(reg_val, state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    return CPU2_ERR_SUCCESS;
+}
+

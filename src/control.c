@@ -68,6 +68,9 @@ unsigned int execute(uint8_t opcode, uint8_t dest, uint8_t src, int8_t value,
         case ISA_OPCODE_ADD:
             isa_op_add(dest, src, state);
             break;
+        case ISA_OPCODE_JMP:
+            isa_op_jmp(src, state);
+            break;
     }
 
     return CPU2_ERR_SUCCESS;
@@ -89,8 +92,9 @@ unsigned int process(uint32_t* code, unsigned int len, State* state)
 
     uint8_t pc = 0;
 
-    for(unsigned int i=0;i<len;i++)
+    while(pc < len)
     {
+        /* get program counter value */
         res = state_get_program_counter(&pc, state);
 
         if(res != CPU2_ERR_SUCCESS)
@@ -126,8 +130,24 @@ unsigned int process(uint32_t* code, unsigned int len, State* state)
             return res;
         }
 
+        /* get program counter value */
+        res = state_get_program_counter(&pc, state);
+
+        if(res != CPU2_ERR_SUCCESS)
+        {
+            return res;
+        }
+
         /* increment program counter */
         res = state_set_program_counter(pc + 1, state);
+
+        if(res != CPU2_ERR_SUCCESS)
+        {
+            return res;
+        }
+
+        /* get program counter value */
+        res = state_get_program_counter(&pc, state);
 
         if(res != CPU2_ERR_SUCCESS)
         {
