@@ -14,6 +14,9 @@
 #define ISA_STATUS_ZERO 2
 #define ISA_STATUS_NEGATIVE 3
 
+#define ISA_STACK_BASE_ADDR 0x8000
+#define ISA_STACK_MAX_ADDR 0x10000
+
 /* opcode definitions */
 #define ISA_OPCODE_NOP 0x00
 #define ISA_OPCODE_MOV 0x01
@@ -39,6 +42,7 @@
 #define ISA_OPCODE_XOR 0x15
 #define ISA_OPCODE_NOT 0x16
 #define ISA_OPCODE_SWP 0x17
+#define ISA_OPCODE_CMP 0x18
 
 /* Operations */
 unsigned int isa_op_nop(State* state);
@@ -47,6 +51,8 @@ unsigned int isa_op_ldl(uint8_t dest, int8_t value, State* state);
 unsigned int isa_op_add(uint8_t dest, uint8_t src, State* state);
 unsigned int isa_op_jmp(uint8_t reg, State* state);
 unsigned int isa_op_jpv(uint8_t reg, State* state);
+unsigned int isa_op_psh(uint8_t reg, State* state);
+unsigned int isa_op_pop(uint8_t reg, State* state);
 
 #endif /* ISA_H_ */
 

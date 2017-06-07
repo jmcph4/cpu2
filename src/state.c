@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 
 /* JCRL */
 #include <constants.h>
@@ -26,8 +27,8 @@ unsigned int state_init(State* state)
 
     state->IR = 0;
     state->PC = 0;
-    state->SP = 0;
-    state->BP = 0;
+    state->SP = ISA_STACK_BASE_ADDR;
+    state->BP = ISA_STACK_BASE_ADDR;
 
     state->tmp = 0;
     
@@ -75,6 +76,7 @@ unsigned int state_free(State* state)
         return CPU2_ERR_JCRL;
     }
 
+    free(state->stack);
     free(state->reg);
     free(state->stat);
 
@@ -196,6 +198,50 @@ unsigned int state_get_status(unsigned int bit, bool* data, State* state)
 
     return CPU2_ERR_SUCCESS;
 }
+
+unsigned int state_push(int8_t data, State* state)
+{
+    if(state == NULL)
+    {
+        return CPU2_ERR_NULL;
+    }
+
+    unsigned int res = stack_push((void*)(intptr_t)data, state->stack);    
+
+    if(res != JCRL_ERR_OK)
+    {
+        return CPU2_ERR_JCRL;
+    }
+    
+    if(state->SP + 1 > ISA_STACK_MAX_ADDR)
+    {
+        return CPU2_ERR_BOUNDS;
+    }
+
+    state->SP++; /* increment stack pointer */
+
+    return CPU2_ERR_SUCCESS;
+}
+
+unsigned int state_pop(int8_t* data, State* state)
+{
+    if(data == NULL || state == NULL)
+    {
+        return CPU2_ERR_NULL;
+    }
+
+    unsigned int res = stack_pop((void**)data, state->stack);
+
+    if(res != JCRL_ERR_OK)
+    {
+        return CPU2_ERR_JCRL;
+    }
+
+    state->SP--; /* decrement stack pointer */
+
+    return CPU2_ERR_SUCCESS;
+}
+
 
 /* I/O */
 unsigned int state_write(FILE* file, State* state)

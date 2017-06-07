@@ -12,8 +12,8 @@ struct _State
     int8_t* reg;
     uint32_t IR;
     uint8_t PC;
-    uint8_t SP;
-    uint8_t BP;
+    uint16_t SP;
+    uint16_t BP;
     bool* stat;
     Stack* stack;
     int8_t tmp;
@@ -37,6 +37,9 @@ unsigned int state_get_program_counter(uint8_t* data, State* state);
 
 unsigned int state_set_status(unsigned int bit, bool data, State* state);
 unsigned int state_get_status(unsigned int bit, bool* data, State* state);
+
+unsigned int state_push(int8_t data, State* state);
+unsigned int state_pop(int8_t* data, State* state);
 
 /* I/O */
 unsigned int state_write(FILE* file, State* state);

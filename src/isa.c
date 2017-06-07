@@ -226,5 +226,68 @@ unsigned int isa_op_jpv(uint8_t reg, State* state)
     return CPU2_ERR_SUCCESS;
 }
 
+unsigned int isa_op_psh(uint8_t reg, State* state)
+{
+    if(state == NULL)
+    {
+        return CPU2_ERR_NULL;
+    }
+
+    unsigned int res = 0;
+    int8_t reg_val = 0;
+
+    /* get value of register */
+    res = state_get_reg(reg, &reg_val, state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    /* push contents of register onto stack */
+    res = state_push(reg_val, state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    return CPU2_ERR_SUCCESS;
+}
+
+unsigned int isa_op_pop(uint8_t reg, State* state)
+{
+    if(state == NULL)
+    {
+        return CPU2_ERR_NULL;
+    }
+
+    unsigned int res = 0;
+
+    int8_t* stk_val = calloc(1, sizeof(int8_t));
+
+    if(stk_val == NULL)
+    {
+        return CPU2_ERR_SYS_MEM;
+    }
+
+    /* pop item off of stack */
+    res = state_pop(stk_val, state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    /* set value of register accordingly */
+    res = state_set_reg(reg, *stk_val, state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    return CPU2_ERR_SUCCESS;
+}
 
 
