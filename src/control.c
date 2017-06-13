@@ -68,6 +68,9 @@ unsigned int execute(uint8_t opcode, uint8_t dest, uint8_t src, int8_t value,
         case ISA_OPCODE_ADD:
             isa_op_add(dest, src, state);
             break;
+        case ISA_OPCODE_SUB:
+            isa_op_sub(dest, src, state);
+            break;
         case ISA_OPCODE_JMP:
             isa_op_jmp(src, state);
             break;
@@ -117,7 +120,7 @@ unsigned int process(uint32_t* code, unsigned int len, State* state)
         {
             if(res == CPU2_ERR_BOUNDS)
             {
-                /* fault osmehow? */
+                /* fault somehow? */
             }
             else
             {
