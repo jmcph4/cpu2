@@ -203,7 +203,7 @@ unsigned int isa_op_sub(uint8_t dest, uint8_t src, State* state)
             return res;
         }
 
-        if(src_val && dst_val)
+        if(src_val != dst_val)
         {
             res = state_set_status(ISA_STATUS_OVERFLOW, true, state);
            
@@ -272,6 +272,8 @@ unsigned int isa_op_jmp(uint8_t reg, State* state)
         return res;
     }
 
+    printf("JUMP TO %d\n", reg_val); // DEBUG
+
     res = state_set_program_counter(reg_val, state);
 
     if(res != CPU2_ERR_SUCCESS)
@@ -280,6 +282,56 @@ unsigned int isa_op_jmp(uint8_t reg, State* state)
     }
 
     /* reset status register */
+    res = state_reset_status(state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    return CPU2_ERR_SUCCESS;
+}
+
+
+unsigned int isa_op_jpz(uint8_t reg, State* state)
+{
+    if(state == NULL)
+    {
+        return CPU2_ERR_NULL;
+    }
+
+    bool zero = false;
+    
+    unsigned int res = state_get_status(ISA_STATUS_ZERO, &zero, state);
+
+    if(zero)
+    {
+        int8_t reg_val = 0;
+
+        res = state_get_reg(reg, &reg_val, state);
+
+        if(res != CPU2_ERR_SUCCESS)
+        {
+            return res;
+        }
+
+        res = state_set_program_counter(reg_val, state);
+
+        if(res != CPU2_ERR_SUCCESS)
+        {
+            return res;
+        }
+
+        /* reset status register */
+        res = state_reset_status(state);
+
+        if(res != CPU2_ERR_SUCCESS)
+        {
+            return res;
+        }
+
+    }
+
     res = state_reset_status(state);
 
     if(res != CPU2_ERR_SUCCESS)
@@ -326,7 +378,13 @@ unsigned int isa_op_jpv(uint8_t reg, State* state)
         {
             return res;
         }
+    }
 
+    res = state_reset_status(state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
     }
 
     return CPU2_ERR_SUCCESS;

@@ -74,6 +74,9 @@ unsigned int execute(uint8_t opcode, uint8_t dest, uint8_t src, int8_t value,
         case ISA_OPCODE_JMP:
             isa_op_jmp(src, state);
             break;
+        case ISA_OPCODE_JPZ:
+            isa_op_jpz(src, state);
+            break;
         case ISA_OPCODE_JPV:
             isa_op_jpv(src, state);
             break;
@@ -128,6 +131,14 @@ unsigned int process(uint32_t* code, unsigned int len, State* state)
             }
         }
 
+        /* increment program counter */
+        res = state_set_program_counter(pc + 1, state);
+
+        if(res != CPU2_ERR_SUCCESS)
+        {
+            return res;
+        }
+
         res = decode(&op, &dst, &src, &val, state);
 
         if(res != CPU2_ERR_SUCCESS)
@@ -142,23 +153,7 @@ unsigned int process(uint32_t* code, unsigned int len, State* state)
             return res;
         }
 
-        /* get program counter value */
-        res = state_get_program_counter(&pc, state);
-
-        if(res != CPU2_ERR_SUCCESS)
-        {
-            return res;
-        }
-
-        /* increment program counter */
-        res = state_set_program_counter(pc + 1, state);
-
-        if(res != CPU2_ERR_SUCCESS)
-        {
-            return res;
-        }
-
-        /* get program counter value */
+        /* check if a jump occurred */
         res = state_get_program_counter(&pc, state);
 
         if(res != CPU2_ERR_SUCCESS)

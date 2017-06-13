@@ -51,6 +51,7 @@ unsigned int isa_op_ldl(uint8_t dest, int8_t value, State* state);
 unsigned int isa_op_add(uint8_t dest, uint8_t src, State* state);
 unsigned int isa_op_sub(uint8_t dest, uint8_t src, State* state);
 unsigned int isa_op_jmp(uint8_t reg, State* state);
+unsigned int isa_op_jpz(uint8_t reg, State* state);
 unsigned int isa_op_jpv(uint8_t reg, State* state);
 unsigned int isa_op_psh(uint8_t reg, State* state);
 unsigned int isa_op_pop(uint8_t reg, State* state);
