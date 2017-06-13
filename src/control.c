@@ -72,13 +72,13 @@ unsigned int execute(uint8_t opcode, uint8_t dest, uint8_t src, int8_t value,
             isa_op_sub(dest, src, state);
             break;
         case ISA_OPCODE_JMP:
-            isa_op_jmp(src, state);
+            isa_op_jmp(value, state);
             break;
         case ISA_OPCODE_JPZ:
-            isa_op_jpz(src, state);
+            isa_op_jpz(value, state);
             break;
         case ISA_OPCODE_JPV:
-            isa_op_jpv(src, state);
+            isa_op_jpv(value, state);
             break;
         case ISA_OPCODE_PSH:
             isa_op_psh(src, state);

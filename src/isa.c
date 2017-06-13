@@ -256,25 +256,19 @@ unsigned int isa_op_sub(uint8_t dest, uint8_t src, State* state)
     return CPU2_ERR_SUCCESS;
 }
 
-unsigned int isa_op_jmp(uint8_t reg, State* state)
+unsigned int isa_op_jmp(int8_t addr, State* state)
 {
     if(state == NULL)
     {
         return CPU2_ERR_NULL;
     }
 
-    int8_t reg_val = 0;
-
-    unsigned int res = state_get_reg(reg, &reg_val, state);
-
-    if(res != CPU2_ERR_SUCCESS)
+    if(addr < 0)
     {
-        return res;
-    }
+        return CPU2_ERR_BOUNDS;
+    }    
 
-    printf("JUMP TO %d\n", reg_val); // DEBUG
-
-    res = state_set_program_counter(reg_val, state);
+    unsigned int res = state_set_program_counter(addr, state);
 
     if(res != CPU2_ERR_SUCCESS)
     {
@@ -293,7 +287,7 @@ unsigned int isa_op_jmp(uint8_t reg, State* state)
 }
 
 
-unsigned int isa_op_jpz(uint8_t reg, State* state)
+unsigned int isa_op_jpz(int8_t addr, State* state)
 {
     if(state == NULL)
     {
@@ -306,43 +300,18 @@ unsigned int isa_op_jpz(uint8_t reg, State* state)
 
     if(zero)
     {
-        int8_t reg_val = 0;
-
-        res = state_get_reg(reg, &reg_val, state);
+        res = isa_op_jmp(addr, state);
 
         if(res != CPU2_ERR_SUCCESS)
         {
             return res;
         }
-
-        res = state_set_program_counter(reg_val, state);
-
-        if(res != CPU2_ERR_SUCCESS)
-        {
-            return res;
-        }
-
-        /* reset status register */
-        res = state_reset_status(state);
-
-        if(res != CPU2_ERR_SUCCESS)
-        {
-            return res;
-        }
-
-    }
-
-    res = state_reset_status(state);
-
-    if(res != CPU2_ERR_SUCCESS)
-    {
-        return res;
     }
 
     return CPU2_ERR_SUCCESS;
 }
 
-unsigned int isa_op_jpv(uint8_t reg, State* state)
+unsigned int isa_op_jpv(int8_t addr, State* state)
 {
     if(state == NULL)
     {
@@ -355,36 +324,12 @@ unsigned int isa_op_jpv(uint8_t reg, State* state)
 
     if(overflow)
     {
-        int8_t reg_val = 0;
-
-        res = state_get_reg(reg, &reg_val, state);
+        res = isa_op_jmp(addr, state);
 
         if(res != CPU2_ERR_SUCCESS)
         {
             return res;
         }
-
-        res = state_set_program_counter(reg_val, state);
-
-        if(res != CPU2_ERR_SUCCESS)
-        {
-            return res;
-        }
-
-        /* reset status register */
-        res = state_reset_status(state);
-
-        if(res != CPU2_ERR_SUCCESS)
-        {
-            return res;
-        }
-    }
-
-    res = state_reset_status(state);
-
-    if(res != CPU2_ERR_SUCCESS)
-    {
-        return res;
     }
 
     return CPU2_ERR_SUCCESS;
