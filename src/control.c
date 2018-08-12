@@ -71,6 +71,9 @@ unsigned int execute(uint8_t opcode, uint8_t dest, uint8_t src, int8_t value,
         case ISA_OPCODE_SUB:
             isa_op_sub(dest, src, state);
             break;
+        case ISA_OPCODE_MUL:
+            isa_op_mul(dest, src, state);
+            break;
         case ISA_OPCODE_JMP:
             isa_op_jmp(value, state);
             break;
