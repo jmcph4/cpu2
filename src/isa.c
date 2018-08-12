@@ -353,6 +353,103 @@ unsigned int isa_op_mul(uint8_t dest, uint8_t src, State* state)
     return CPU2_ERR_SUCCESS;
 }
 
+unsigned int isa_op_div(uint8_t dest, uint8_t src, State* state)
+{
+    if(state == NULL) /* null guard */
+    {
+        return CPU2_ERR_NULL;
+    }
+
+    /* clear status flags */
+    unsigned int res = state_reset_status(state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    int8_t src_val = 0;
+    int8_t dst_val = 0;
+
+    /* get value in source register */
+    res = state_get_reg(src, &src_val, state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    /* get value in destination register */
+    res = state_get_reg(dest, &dst_val, state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    int8_t div_result = src_val / dst_val;
+
+    if(div_result == 0)
+    {
+        res = state_set_status(ISA_STATUS_ZERO, true, state);
+
+        if(res != CPU2_ERR_SUCCESS)
+        {
+            return res;
+        }
+
+        if(src_val != 0 && dst_val)
+        {
+            res = state_set_status(ISA_STATUS_OVERFLOW, true, state);
+           
+            if(res != CPU2_ERR_SUCCESS)
+            {
+                return res;
+            }
+        }
+    }
+    else if(div_result < 0)
+    {
+        res = state_set_status(ISA_STATUS_NEGATIVE, true, state);
+
+        if(res != CPU2_ERR_SUCCESS)
+        {
+            return res;
+        }
+        
+        if(src_val > 0 && dst_val > 0)
+        {
+            res = state_set_status(ISA_STATUS_OVERFLOW, true, state);
+
+            if(res != CPU2_ERR_SUCCESS)
+            {
+                return res;
+            }
+        }
+    }
+    else if(div_result > 0)
+    {
+        if(src_val < 0 && dst_val < 0)
+        {
+            res = state_set_status(ISA_STATUS_OVERFLOW, true, state);
+
+            if(res != CPU2_ERR_SUCCESS)
+            {
+                return res;
+            }
+        }
+    }
+
+    res = state_set_reg(dest, div_result, state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    return CPU2_ERR_SUCCESS;
+}
+
 unsigned int isa_op_jmp(int8_t addr, State* state)
 {
     if(state == NULL)
