@@ -545,6 +545,11 @@ unsigned int isa_op_jpz(int8_t addr, State* state)
     
     unsigned int res = state_get_status(ISA_STATUS_ZERO, &zero, state);
 
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
     if(zero)
     {
         res = isa_op_jmp(addr, state);
@@ -568,6 +573,11 @@ unsigned int isa_op_jpc(int8_t addr, State* state)
     bool carry = false;
     
     unsigned int res = state_get_status(ISA_STATUS_CARRY, &carry, state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
 
     if(carry)
     {
@@ -593,6 +603,11 @@ unsigned int isa_op_jpv(int8_t addr, State* state)
     
     unsigned int res = state_get_status(ISA_STATUS_OVERFLOW, &overflow, state);
 
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+    
     if(overflow)
     {
         res = isa_op_jmp(addr, state);
