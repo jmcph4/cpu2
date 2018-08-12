@@ -657,7 +657,7 @@ unsigned int isa_op_inc(uint8_t dest, State* state)
             return res;
         }
 
-        if(src_val != 0 && dst_val)
+        if(inc_result != 0 && dst_val)
         {
             res = state_set_status(ISA_STATUS_OVERFLOW, true, state);
            
