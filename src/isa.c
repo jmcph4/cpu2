@@ -621,6 +621,82 @@ unsigned int isa_op_jpv(int8_t addr, State* state)
     return CPU2_ERR_SUCCESS;
 }
 
+unsigned int isa_op_inc(uint8_t dest, State* state)
+{
+    if(state == NULL) /* null guard */
+    {
+        return CPU2_ERR_NULL;
+    }
+
+    /* clear status flags */
+    unsigned int res = state_reset_status(state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    int8_t dst_val = 0;
+
+    /* get value in destination register */
+    res = state_get_reg(dest, &dst_val, state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    int8_t inc_result = dst_val++;
+
+    if(inc_result == 0)
+    {
+        res = state_set_status(ISA_STATUS_ZERO, true, state);
+
+        if(res != CPU2_ERR_SUCCESS)
+        {
+            return res;
+        }
+
+        if(src_val != 0 && dst_val)
+        {
+            res = state_set_status(ISA_STATUS_OVERFLOW, true, state);
+           
+            if(res != CPU2_ERR_SUCCESS)
+            {
+                return res;
+            }
+        }
+    }
+    else if(inc_result < 0)
+    {
+        res = state_set_status(ISA_STATUS_NEGATIVE, true, state);
+
+        if(res != CPU2_ERR_SUCCESS)
+        {
+            return res;
+        }
+        
+        if(dst_val > 0)
+        {
+            res = state_set_status(ISA_STATUS_OVERFLOW, true, state);
+
+            if(res != CPU2_ERR_SUCCESS)
+            {
+                return res;
+            }
+        }
+    }
+
+    res = state_set_reg(dest, inc_result, state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    return CPU2_ERR_SUCCESS;
+}
+
 unsigned int isa_op_psh(uint8_t reg, State* state)
 {
     if(state == NULL)

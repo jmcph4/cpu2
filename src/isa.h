@@ -57,6 +57,7 @@ unsigned int isa_op_jmp(int8_t addr, State* state);
 unsigned int isa_op_jpz(int8_t addr, State* state);
 unsigned int isa_op_jpc(int8_t addr, State* state);
 unsigned int isa_op_jpv(int8_t addr, State* state);
+unsigned int isa_op_inc(uint8_t dest, STate* state);
 unsigned int isa_op_psh(uint8_t reg, State* state);
 unsigned int isa_op_pop(uint8_t reg, State* state);
 

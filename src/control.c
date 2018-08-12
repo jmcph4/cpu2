@@ -92,6 +92,9 @@ unsigned int execute(uint8_t opcode, uint8_t dest, uint8_t src, int8_t value,
         case ISA_OPCODE_JPV:
             isa_op_jpv(value, state);
             break;
+        case ISA_OPCODE_INC:
+            isa_op_inc(dest, state);
+            break;
         case ISA_OPCODE_PSH:
             isa_op_psh(src, state);
             break;
