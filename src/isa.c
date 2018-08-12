@@ -149,7 +149,6 @@ unsigned int isa_op_add(uint8_t dest, uint8_t src, State* state)
         }
     }
 
-
     res = state_set_reg(dest, add_result, state);
 
     if(res != CPU2_ERR_SUCCESS)
@@ -244,7 +243,6 @@ unsigned int isa_op_sub(uint8_t dest, uint8_t src, State* state)
             }
         }
     }
-
 
     res = state_set_reg(dest, sub_result, state);
 
@@ -441,6 +439,62 @@ unsigned int isa_op_div(uint8_t dest, uint8_t src, State* state)
     }
 
     res = state_set_reg(dest, div_result, state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    return CPU2_ERR_SUCCESS;
+}
+
+unsigned int isa_op_mod(uint8_t dest, uint8_t src, State* state)
+{
+    if(state == NULL) /* null guard */
+    {
+        return CPU2_ERR_NULL;
+    }
+
+    /* clear status flags */
+    unsigned int res = state_reset_status(state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    int8_t src_val = 0;
+    int8_t dst_val = 0;
+
+    /* get value in source register */
+    res = state_get_reg(src, &src_val, state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    /* get value in destination register */
+    res = state_get_reg(dest, &dst_val, state);
+
+    if(res != CPU2_ERR_SUCCESS)
+    {
+        return res;
+    }
+
+    int8_t mod_result = src_val % dst_val;
+
+    if(mod_result == 0) /* check for zero result */
+    {
+        res = state_set_status(ISA_STATUS_ZERO, true, state);
+
+        if(res != CPU2_ERR_SUCCESS)
+        {
+            return res;
+        }
+    }
+
+    res = state_set_reg(dest, mod_result, state);
 
     if(res != CPU2_ERR_SUCCESS)
     {
