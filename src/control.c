@@ -86,6 +86,9 @@ unsigned int execute(uint8_t opcode, uint8_t dest, uint8_t src, int8_t value,
         case ISA_OPCODE_JPZ:
             isa_op_jpz(value, state);
             break;
+        case ISA_OPCODE_JPC:
+            isa_op_jpc(value, state);
+            break;
         case ISA_OPCODE_JPV:
             isa_op_jpv(value, state);
             break;
